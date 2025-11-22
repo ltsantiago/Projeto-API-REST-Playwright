@@ -1,0 +1,25 @@
+meta {
+  name: Cadastrar Usuário
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://serverest.dev/usuarios
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "Kamryn Welch",
+    "email": "kamryn.welch13@hotmail.com",
+    "password": "2",
+    "administrador": "true"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
