@@ -1,4 +1,3 @@
-
 export const productService = (request) => {
   const registerProduct = async (product, token) => {
     return await request.post("https://serverest.dev/produtos", {
@@ -9,7 +8,12 @@ export const productService = (request) => {
     });
   };
 
+  const listProduct = async () => {
+    return await request.get("https://serverest.dev/produtos", {});
+  };
+
   return {
     registerProduct,
+    listProduct
   };
 };

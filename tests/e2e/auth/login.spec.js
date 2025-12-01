@@ -1,14 +1,8 @@
-import { expect, test } from "@playwright/test";
-import { authServiceUser } from "../../support/services/auth.js";
+import { expect, test } from "../../support/fixtures/index.js";
 import { createUser } from "../../support/factories/user.js";
 
 test.describe("POST / Login", () => {
-  let auth;
-  test.beforeEach(({ request }) => {
-    auth = authServiceUser(request);
-  });
-
-  test(" Deve realizar login com sucesso!!", async () => {
+  test(" Deve realizar login com sucesso!!", async ({ auth }) => {
     // Preparação dos dados
     const user = createUser();
 
@@ -28,7 +22,7 @@ test.describe("POST / Login", () => {
     expect(responseBody).toHaveProperty("authorization");
   });
 
-  test(" Não deve logar com a senha incorreta", async () => {
+  test(" Não deve logar com a senha incorreta", async ({ auth }) => {
     // Preparação dos dados
     const user = createUser();
 
@@ -46,7 +40,7 @@ test.describe("POST / Login", () => {
     );
   });
 
-  test(" Não deve logar com email que não foi cadastrado", async () => {
+  test(" Não deve logar com email que não foi cadastrado", async ({ auth }) => {
     // Preparação dos dados
     const user = {
       email: "404@lucas.dev.com",
@@ -64,7 +58,7 @@ test.describe("POST / Login", () => {
     );
   });
 
-  test(" Não deve logar com  campo email não informado", async () => {
+  test(" Não deve logar com  campo email não informado", async ({ auth }) => {
     // Preparação dos dados
     const user = {
       password: "teste",
@@ -78,7 +72,7 @@ test.describe("POST / Login", () => {
     expect(responseBody).toHaveProperty("email", "email é obrigatório");
   });
 
-  test(" Não deve logar com  campo senha não informado", async () => {
+  test(" Não deve logar com  campo senha não informado", async ({ auth }) => {
     // Preparação dos dados
     const user = {
       email: "alba_sipes@hotmail.com",
