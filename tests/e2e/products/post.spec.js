@@ -1,18 +1,11 @@
-import { expect, test } from "@playwright/test";
-import { authServiceUser } from "../../support/services/auth.js";
-import { productService } from "../../support/services/products.js";
+import { expect, test } from "../../support/fixtures/index.js";
 import { createProduct } from "../../support/factories/products.js";
 import { createUser } from "../../support/factories/user.js";
 
 test.describe("POST / Produtos", () => {
-  let auth;
-  let product;
-  test.beforeEach(({ request }) => {
-    auth = authServiceUser(request);
-    product = productService(request);
-  });
 
-  test(" Deve cadastrar produto com sucesso", async () => {
+
+  test(" Deve cadastrar produto com sucesso", async ({auth, products}) => {
     // Preparação dos dados
     const user = createUser();
 
@@ -34,7 +27,7 @@ test.describe("POST / Produtos", () => {
     const productData = createProduct();
 
     // Realiza o cadastro do produto
-    const respProduct = await product.registerProduct(
+    const respProduct = await products.registerProduct(
       productData,
       responseBody.authorization
     );

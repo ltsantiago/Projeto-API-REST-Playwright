@@ -1,0 +1,25 @@
+meta {
+  name: Edição de Usuário
+  type: http
+  seq: 3
+}
+
+put {
+  url: https://serverest.dev/usuarios
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nome": "Fulano da Silva",
+    "email": "beltrano@qa.com.br",
+    "password": "teste",
+    "administrador": "true"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

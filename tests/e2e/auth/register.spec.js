@@ -1,16 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../support/fixtures/index.js";
 import { createUser } from "../../support/factories/user.js";
-import { authServiceUser } from "../../support/services/auth.js";
+
 
 
 test.describe("POST/ Register", () => {
-  let auth;
-  test.beforeEach(({ request }) => {
-    auth = authServiceUser(request);
-  });
+ 
 
   test(" Deve realizar cadastro de um novo usuário com sucesso!!", async ({
-    request,
+    auth,
   }) => {
     // Preparação dos dados
     const user = createUser();
@@ -29,7 +26,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve realizar cadastro com email já em uso", async ({
-    request,
+    auth,
   }) => {
     const user = createUser();
 
@@ -48,7 +45,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve realizar cadastro com email inválido", async ({
-    request,
+    auth,
   }) => {
     const user = {
       nome: "Messi Ronaldo",
@@ -68,7 +65,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve cadastrar quando o campo nome não é informado", async ({
-    request,
+    auth,
   }) => {
     const user = {
       email: "messironaldo$.com",
@@ -84,7 +81,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve cadastrar quando o campo email não é informado", async ({
-    request,
+    auth,
   }) => {
     const user = {
       nome: "Messi Ronaldo",
@@ -100,7 +97,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve cadastrar quando o campo password não é informado", async ({
-    request,
+    auth,
   }) => {
     const user = {
       nome: "Messi Ronaldo",
@@ -116,7 +113,7 @@ test.describe("POST/ Register", () => {
   });
 
   test(" Não Deve cadastrar quando o campo administrador não é informado", async ({
-    request,
+    auth,
   }) => {
     const user = {
       nome: "Messi Ronaldo",

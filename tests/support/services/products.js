@@ -12,8 +12,10 @@ export const productService = (request) => {
     return await request.get("https://serverest.dev/produtos", {});
   };
 
+  
+
   return {
     registerProduct,
-    listProduct
+    listProduct,
   };
 };
