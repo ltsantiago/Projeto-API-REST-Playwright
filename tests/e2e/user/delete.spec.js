@@ -45,4 +45,26 @@ test.describe("DELETE / Excluir lista de usuários", () => {
     const responseBody = await respDelete.json();
     expect(responseBody.message).toBe("Nenhum registro excluído");
   });
+
+
+  //  test(" Não deve excluir usuário que tem carrinho cadastrado", async ({
+  //   auth,
+  //   users,
+  // }) => {
+  //   // Preparação dos dados
+  //   const user = createUser();
+
+  //   // Realiza o cadastro
+  //   const respCreate = await auth.createRegisterUser(user);
+  //   expect(respCreate.status()).toBe(201);
+
+  //   // Lista os usuários para obter o ID do usuário criado
+  //   const userId = generateULID();
+  //   console.log("ID gerado pela função:", userId);
+
+  //   const respDelete = await users.deleteUserList(userId);
+  //   expect(respDelete.status()).toBe(200);
+  //   const responseBody = await respDelete.json();
+  //   expect(responseBody.message).toBe("Nenhum registro excluído");
+  // });
 });
