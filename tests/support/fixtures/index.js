@@ -3,6 +3,7 @@ import { test as baseTest, expect } from "@playwright/test";
 import { authServiceUser } from "../../support/services/auth.js";
 import { userService } from "../../support/services/user.js";
 import { productService } from "../../support/services/products.js";
+import { cartService } from "../../support/services/cart.js";
 
 const test = baseTest.extend({
   auth: async ({ request }, use) => {
@@ -18,6 +19,11 @@ const test = baseTest.extend({
   products: async ({ request }, use) => {
     const products = productService(request);
     await use(products);
+  },
+
+  cart: async ({ request }, use) => {
+    const cart = cartService(request);
+    await use(cart);
   }
 });
 

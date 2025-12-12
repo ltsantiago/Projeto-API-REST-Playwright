@@ -3,7 +3,7 @@ export function generateULID() {
   const TIME_LEN = 10;
   const RANDOM_LEN = 16;
 
-  function encodeTime(time) {
+   function encodeTime(time) {
     let output = "";
     for (let i = 0; i < TIME_LEN; i++) {
       output = ENCODING[time % 32] + output;
@@ -24,3 +24,15 @@ export function generateULID() {
   const time = Date.now();
   return encodeTime(time) + encodeRandom();
 }
+
+ export function generateUUID16() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let uuid = "";
+
+  for (let i = 0; i < 16; i++) {
+    uuid += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return uuid;
+}
+
