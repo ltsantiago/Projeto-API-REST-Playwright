@@ -2,6 +2,10 @@ import { expect, test } from "../../support/fixtures/index.js";
 import { createUser } from "../../support/factories/user.js";
 
 test.describe("POST / Login", () => {
+  test.beforeEach(() => {
+    console.log("Iniciando teste de login");
+  });
+
   test(" Deve realizar login com sucesso!!", async ({ auth }) => {
     // Preparação dos dados
     const user = createUser();
@@ -26,12 +30,14 @@ test.describe("POST / Login", () => {
     // Preparação dos dados
     const user = createUser();
 
+    // Realiza o cadastro
     const respCreate = await auth.createRegisterUser(user);
     expect(respCreate.status()).toBe(201);
 
-    //
+    // Tenta logar com a senha errada
     const response = await auth.login({ ...user, password: "senhaerrada" });
 
+    // Asserções do login
     expect(response.status()).toBe(401);
     const responseBody = await response.json();
     expect(responseBody).toHaveProperty(
@@ -47,7 +53,7 @@ test.describe("POST / Login", () => {
       password: "teste",
     };
 
-    //
+    // Tenta logar com email que não foi cadastrado
     const response = await auth.login(user);
 
     expect(response.status()).toBe(401);
@@ -64,7 +70,7 @@ test.describe("POST / Login", () => {
       password: "teste",
     };
 
-    //
+    // Tenta logar sem informar o email
     const response = await auth.login(user);
 
     expect(response.status()).toBe(400);
@@ -78,7 +84,7 @@ test.describe("POST / Login", () => {
       email: "alba_sipes@hotmail.com",
     };
 
-    //
+    // Tenta logar sem informar a senha
     const response = await auth.login(user);
 
     expect(response.status()).toBe(400);

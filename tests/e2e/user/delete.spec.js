@@ -46,7 +46,6 @@ test.describe("DELETE / Excluir lista de usuários", () => {
     expect(responseBody.message).toBe("Nenhum registro excluído");
   });
 
-
   //  test(" Não deve excluir usuário que tem carrinho cadastrado", async ({
   //   auth,
   //   users,

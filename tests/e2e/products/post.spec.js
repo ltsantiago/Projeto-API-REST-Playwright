@@ -3,9 +3,7 @@ import { createProduct } from "../../support/factories/products.js";
 import { createUser } from "../../support/factories/user.js";
 
 test.describe("POST / Produtos", () => {
-
-
-  test(" Deve cadastrar produto com sucesso", async ({auth, products}) => {
+  test(" Deve cadastrar produto com sucesso", async ({ auth, products }) => {
     // Preparação dos dados
     const user = createUser();
 
@@ -32,5 +30,10 @@ test.describe("POST / Produtos", () => {
       responseBody.authorization
     );
     expect(respProduct.status()).toBe(201);
+    const productBody = await respProduct.json();
+    expect(productBody).toHaveProperty(
+      "message",
+      "Cadastro realizado com sucesso"
+    );
   });
 });

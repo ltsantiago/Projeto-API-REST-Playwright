@@ -13,9 +13,31 @@ export const productService = (request) => {
   };
 
   
+  const returnProductId = async () => {
+    const response = await listProduct();
+    const responseBody = await response.json();
+    
+    const productId = responseBody.produtos;
+    
+    if (!productId || productId.length === 0) {
+      return "Nenhum produto encontrado na API.";
+    }
+    
+    const randomIndex = Math.floor(Math.random() * productId.length);
+    return productId[randomIndex]._id;
+  };
+  
+  const listProductById = async (productId) => {
+    return await request.get(`https://serverest.dev/produtos/${productId}`);
+  };
+
+
+  
 
   return {
     registerProduct,
     listProduct,
+    returnProductId,
+    listProductById
   };
 };

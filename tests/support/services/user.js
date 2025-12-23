@@ -25,10 +25,17 @@ export const userService = (request) => {
     return await request.delete(`https://serverest.dev/usuarios/${userId}`);
   };
 
+  const putUserList = async (userId, user) => {
+    return await request.put(`https://serverest.dev/usuarios/${userId}`, {
+      data: user,
+    });
+  }
+
   return {
     listUser,
     deleteUserList,
     returnUserId,
     listUserID,
+    putUserList
   };
 };

@@ -28,6 +28,8 @@ test.describe("GET /Listar Usuários", () => {
     const userId = await users.returnUserId();
     console.log("ID do usuário a ser Listado:", userId);
     const response = await users.listUserID(userId);
+    
+    // Asserções
     expect(response.status()).toBe(200);
     const responseBody = await response.json();
     expect(responseBody).toHaveProperty("nome");
