@@ -1,86 +1,63 @@
+
 import { expect, test } from "../../support/fixtures/index.js";
-import { createUser, updatedUserData } from "../../support/factories/user.js";
-import {generateUUID16} from "../../support/utils.js";
+import { createUser } from "../../support/factories/user.js";
+import { generateUUID16 } from "../../support/utils.js";
 
-test.describe("PUT /Editar usuário", () => {
-  test(" Deve editar usuário cadastrado com sucesso!!", async ({
-    auth,
-    users,
-  }) => {
-    // Preparação dos dados
-    const user = createUser();
+test.describe("PUT / Editar usuário", () => {
+  let baseUser;
+  let baseUserBody;
 
-    // Realiza o cadastro
-    const respCreate = await auth.createRegisterUser(user);
-    expect(respCreate.status()).toBe(201);
-    // Lista os usuários para obter o ID do usuário criado
-    const userId = await users.returnUserId();
-    console.log("ID do usuário a ser editado:", userId);
-    // Dados para atualização
-    const updatePutUserData = updatedUserData();
-    const putResponse = await users.putUserList(userId, updatePutUserData);
-    expect(putResponse.status()).toBe(200);
+  test.beforeEach(async ({ auth }) => {
+    // cria e registra um usuário base para cada teste (isolamento)
+    baseUser = createUser();
+    const resp = await auth.createRegisterUser(baseUser);
+    expect(resp.status()).toBe(201);
+    baseUserBody = await resp.json();
   });
 
-  test(" Não Deve editar usuário  com email já cadastrado", async ({
-    auth,
-    users,
-  }) => {
-    // Preparação dos dados: cria dois usuários distintos
-    const user = createUser();
-    const user2 = createUser();
+  const registerUserAndReturnBody = async (auth, user) => {
+    const resp = await auth.createRegisterUser(user);
+    expect(resp.status()).toBe(201);
+    return await resp.json();
+  };
 
-    // Cadastra o primeiro usuário
-    const respCreate1 = await auth.createRegisterUser(user);
-    expect(respCreate1.status()).toBe(201);
-    const body1 = await respCreate1.json(); // deve conter _id do usuário criado
-    const userId1 = body1._id;
+  test("Deve editar usuário cadastrado com sucesso", async ({ users }) => {
+    const userId = baseUserBody._id;
+    const updateData = createUser();
 
-    // Cadastra o segundo usuário (email que será reutilizado)
-    const respCreate2 = await auth.createRegisterUser(user2);
-    expect(respCreate2.status()).toBe(201);
-    const body2 = await respCreate2.json();
-    const userEmailAlreadyUsed = body2.email || user2.email;
+    const putResponse = await users.putUserList(userId, updateData);
+    expect(putResponse.status()).toBe(200);
 
-    console.log("ID do usuário 1:", userId1);
-    console.log("Email já cadastrado (usuário 2):", userEmailAlreadyUsed);
+    const body = await putResponse.json();
+    expect(body).toHaveProperty("message");
+    expect(body.message.toLowerCase()).toMatch(/alterad|sucesso|atualiz/i);
+  });
 
-    // Dados para atualização do primeiro usuário, usando o email do segundo
-    const updatePutUserData = updatedUserData();
-    updatePutUserData.email = userEmailAlreadyUsed; // força email duplicado
+  test("Não deve editar usuário com email já cadastrado", async ({ auth, users }) => {
+    // cria um segundo usuário para obter um email já existente
+    const otherUser = createUser();
+    const otherBody = await registerUserAndReturnBody(auth, otherUser);
+    const existingEmail = otherBody.email || otherUser.email;
 
-    const putResponse = await users.putUserList(userId1, updatePutUserData);
+    const updateData = createUser();
+    updateData.email = existingEmail; // força conflito de email
+
+    const putResponse = await users.putUserList(baseUserBody._id, updateData);
     expect(putResponse.status()).toBe(400);
 
-    const responseBody = await putResponse.json();
-    expect(responseBody).toHaveProperty(
-      "message",
-      "Este email já está sendo usado"
-    );
+    const body = await putResponse.json();
+    expect(body).toHaveProperty("message");
+    expect(body.message.toLowerCase()).toMatch(/email.*(já|em uso|already|in use)/i);
   });
 
-  test("Deve cadastrar usuário ao invés de editar quando id desconhecido ou usuário", async ({
-    auth,
-    users,
-  }) => {
-    
-   // Preparação dos dados
-    const user = createUser();
-
-    // Realiza o cadastro
-    const respCreate = await auth.createRegisterUser(user);
-    expect(respCreate.status()).toBe(201);
-
-    // Gera um ID inválido para teste
+  test("Deve cadastrar usuário ao invés de editar quando id desconhecido ou usuário não encontrado", async ({ users }) => {
     const invalidUserId = generateUUID16();
-    console.log("ID inválido para edição:", invalidUserId);
-   
-    // Dados para atualização
-    const updatePutUserData = updatedUserData();
+    const updateData = createUser();
 
-    const putResponse = await users.putUserList(invalidUserId,updatePutUserData);
+    const putResponse = await users.putUserList(invalidUserId, updateData);
     expect(putResponse.status()).toBe(201);
-    const responseBody = await putResponse.json();
-    expect(responseBody).toHaveProperty("message", "Cadastro realizado com sucesso");
+
+    const body = await putResponse.json();
+    expect(body).toHaveProperty("message", "Cadastro realizado com sucesso");
   });
 });

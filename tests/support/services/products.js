@@ -32,11 +32,20 @@ export const productService = (request) => {
     return await request.get(`https://serverest.dev/produtos/${productId}`);
   };
 
-   const deleteProduct = async (productId, token) => {
+  const deleteProduct = async (productId, token) => {
     return await request.delete(`https://serverest.dev/produtos/${productId}`, {
       headers: {
         Authorization: `${token}`,
       },
+    });
+  }
+
+  const putProduct = async (productId, product, token) => {
+    return await request.put(`https://serverest.dev/produtos/${productId}`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+      data: product,
     });
   }
 
@@ -45,6 +54,7 @@ export const productService = (request) => {
     listProduct,
     returnProductId,
     listProductById,
-    deleteProduct
+    deleteProduct,
+    putProduct
   };
 };  

@@ -1,0 +1,34 @@
+meta {
+  name: Edição de Produtos
+  type: http
+  seq: 5
+}
+
+put {
+  url: https://serverest.dev/produtos/GqMMdZ0xnWcOEoaf
+  body: json
+  auth: bearer
+}
+
+headers {
+  ~Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxvcGV6QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoidGVzdGUiLCJpYXQiOjE3NjQyMDM5NDEsImV4cCI6MTc2NDIwNDU0MX0.tSX-A4nJ9ZJM8I-4BW3it2N9aCsFsfyi7HWdM5drBzw
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ1bGFub0BxYS5jb20iLCJwYXNzd29yZCI6InRlc3RlIiwiaWF0IjoxNzY0MjYxODMxLCJleHAiOjE3NjQyNjI0MzF9._-Djr5lXTjDiFMxkW0OA2p3wJd-uEtHN4BMlrk9qMds
+}
+
+body:json {
+  
+  {
+    "nome": "Produto Editado",
+    "preco": 150,
+    "descricao": "Descrição do produto editado",
+    "quantidade": 50
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

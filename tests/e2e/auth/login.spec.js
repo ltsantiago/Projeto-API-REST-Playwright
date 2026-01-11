@@ -1,94 +1,65 @@
+
 import { expect, test } from "../../support/fixtures/index.js";
 import { createUser } from "../../support/factories/user.js";
 
 test.describe("POST / Login", () => {
-  test.beforeEach(() => {
-    console.log("Iniciando teste de login");
-  });
 
-  test(" Deve realizar login com sucesso!!", async ({ auth }) => {
-    // Preparação dos dados
+ 
+  const registerUser = async (auth, user) => {
+    const resp = await auth.createRegisterUser(user);
+    expect(resp.status()).toBe(201);
+    return resp;
+  };
+
+  const doLogin = async (auth, credentials) => {
+    return await auth.login(credentials);
+  };
+
+  test("Deve realizar login com sucesso", async ({ auth }) => {
     const user = createUser();
+    await registerUser(auth, user);
 
-    // Realiza o cadastro
-    const respCreate = await auth.createRegisterUser(user);
-    expect(respCreate.status()).toBe(201);
+    const resp = await doLogin(auth, user);
+    expect(resp.status()).toBe(200);
 
-    // Realiza o login
-    const response = await auth.login(user);
-    // Asserções do login
-    expect(response.status()).toBe(200);
-    const responseBody = await response.json();
-    expect(responseBody).toHaveProperty(
-      "message",
-      "Login realizado com sucesso"
-    );
-    expect(responseBody).toHaveProperty("authorization");
+    const body = await resp.json();
+    expect(body).toHaveProperty("message", "Login realizado com sucesso");
+    expect(body).toHaveProperty("authorization");
   });
 
-  test(" Não deve logar com a senha incorreta", async ({ auth }) => {
-    // Preparação dos dados
+  test("Não deve logar com a senha incorreta", async ({ auth }) => {
     const user = createUser();
+    await registerUser(auth, user);
 
-    // Realiza o cadastro
-    const respCreate = await auth.createRegisterUser(user);
-    expect(respCreate.status()).toBe(201);
+    const resp = await doLogin(auth, { ...user, password: "senhaerrada" });
+    expect(resp.status()).toBe(401);
 
-    // Tenta logar com a senha errada
-    const response = await auth.login({ ...user, password: "senhaerrada" });
-
-    // Asserções do login
-    expect(response.status()).toBe(401);
-    const responseBody = await response.json();
-    expect(responseBody).toHaveProperty(
-      "message",
-      "Email e/ou senha inválidos"
-    );
+    const body = await resp.json();
+    expect(body).toHaveProperty("message", "Email e/ou senha inválidos");
   });
 
-  test(" Não deve logar com email que não foi cadastrado", async ({ auth }) => {
-    // Preparação dos dados
-    const user = {
-      email: "404@lucas.dev.com",
-      password: "teste",
-    };
+  test("Não deve logar com email não cadastrado", async ({ auth }) => {
+    const credentials = { email: "404@lucas.dev.com", password: "teste" };
+    const resp = await doLogin(auth, credentials);
+    expect(resp.status()).toBe(401);
 
-    // Tenta logar com email que não foi cadastrado
-    const response = await auth.login(user);
-
-    expect(response.status()).toBe(401);
-    const responseBody = await response.json();
-    expect(responseBody).toHaveProperty(
-      "message",
-      "Email e/ou senha inválidos"
-    );
+    const body = await resp.json();
+    expect(body).toHaveProperty("message", "Email e/ou senha inválidos");
   });
 
-  test(" Não deve logar com  campo email não informado", async ({ auth }) => {
-    // Preparação dos dados
-    const user = {
-      password: "teste",
-    };
+  test("Não deve logar sem informar o email", async ({ auth }) => {
+    const resp = await doLogin(auth, { password: "teste" });
+    expect(resp.status()).toBe(400);
 
-    // Tenta logar sem informar o email
-    const response = await auth.login(user);
-
-    expect(response.status()).toBe(400);
-    const responseBody = await response.json();
-    expect(responseBody).toHaveProperty("email", "email é obrigatório");
+    const body = await resp.json();
+    expect(body).toHaveProperty("email", "email é obrigatório");
   });
 
-  test(" Não deve logar com  campo senha não informado", async ({ auth }) => {
-    // Preparação dos dados
-    const user = {
-      email: "alba_sipes@hotmail.com",
-    };
+  test("Não deve logar sem informar a senha", async ({ auth }) => {
+    const resp = await doLogin(auth, { email: "testessimples@hotmail.com" });
+    expect(resp.status()).toBe(400);
 
-    // Tenta logar sem informar a senha
-    const response = await auth.login(user);
-
-    expect(response.status()).toBe(400);
-    const responseBody = await response.json();
-    expect(responseBody).toHaveProperty("password", "password é obrigatório");
+    const body = await resp.json();
+    expect(body).toHaveProperty("password", "password é obrigatório");
   });
 });
